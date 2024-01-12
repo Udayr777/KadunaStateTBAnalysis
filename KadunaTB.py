@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import altair as alt
 import plotly.express as px
-
+from PIL import Image
 
 # Page configuration
 st.set_page_config(
@@ -18,25 +18,39 @@ alt.themes.enable("dark")
 
 st.title('Tuberculosis Analysis in Kaduna')
 
-# Load the data
-block1a_2021_df = pd.read_csv("C:/Uday/Uday Research/Uday Projects/Real-World Projects Omdena/Local Chapter - Tuberculosis/2021_block1a_dataset.csv")
-block1a_2022_df = pd.read_csv("C:/Uday/Uday Research/Uday Projects/Real-World Projects Omdena/Local Chapter - Tuberculosis/2022_block1a_dataset.csv")
-block1a_2023_df = pd.read_csv("C:/Uday/Uday Research/Uday Projects/Real-World Projects Omdena/Local Chapter - Tuberculosis/2023_block1a_dataset.csv")
+dataType = ["Number of suspected PTB cases Data", "Number of confirmed PTB cases"]
 
-gps_facility_df = pd.read_csv("C:/Uday/Uday Research/Uday Projects/Real-World Projects Omdena/Local Chapter - Tuberculosis/gps_facility_final.csv")
-
+block2021 = ""
+block2022 = ""
+block2023 = ""
+gps_facility_df = pd.read_csv("Dataset/gps_facility_final.csv")
 
 # Sidebar for Slected Year
 with st.sidebar:
     st.sidebar.image("Kaduna chapter logo.jpg")
     st.title("❤️ Kaduna State Tuberculosis Dashboard")
 
+    #which block the user want to see
+    block = st.selectbox("Dataset", options = dataType )
+
+    if block == "Number of suspected PTB cases Data":
+    # Load the data
+        block2021 = pd.read_csv("Dataset/block1a/2021_block1a_dataset.csv")
+        block2022 = pd.read_csv("Dataset/block1a/2022_block1a_dataset.csv")
+        block2023 = pd.read_csv("Dataset/block1a/2023_block1a_dataset.csv")
+    else:
+        block2021 = pd.read_csv("Dataset/block2a/block2a_2021.csv")
+        block2022 = pd.read_csv("Dataset/block2a/block2a_2022.csv")
+        block2023 = pd.read_csv("Dataset/block2a/block2a_2023.csv")
+
+
+
 
 # Combine unique Years and create labeled options for multiselect
-all_years_with_labels = [year for year in pd.concat([df['Year'] for df in [block1a_2021_df, block1a_2022_df, block1a_2023_df]]).unique()]
+all_years_with_labels = [year for year in pd.concat([df['Year'] for df in [block2021, block2022, block2023]]).unique()]
 
 # Combine unique Quarters and create labeled options for multiselect
-all_quarters_with_labels = [("Quarter " + str(quarter), quarter) for quarter in pd.concat([df['Quarter'] for df in [block1a_2021_df, block1a_2022_df, block1a_2023_df]]).unique()]
+all_quarters_with_labels = [("Quarter " + str(quarter), quarter) for quarter in pd.concat([df['Quarter'] for df in [block2021, block2022, block2023]]).unique()]
 
 with st.sidebar:
     # Create multiselect widgets for Years and Quarters
@@ -48,8 +62,11 @@ with st.sidebar:
     selected_years_values = [int(option) for option in selected_years]
     selected_quarters_values = [int(option) for option in selected_quarters]
 
+    
+    
+
 # Filter and display the combined DataFrame based on selected Years and Quarters
-combined_df = pd.concat([df[df['Year'].isin(selected_years_values) & df['Quarter'].isin(selected_quarters_values)] for df in [block1a_2021_df, block1a_2022_df, block1a_2023_df]]).reset_index(drop=True)
+combined_df = pd.concat([df[df['Year'].isin(selected_years_values) & df['Quarter'].isin(selected_quarters_values)] for df in [block2021, block2022, block2023]]).reset_index(drop=True)
 
 if selected_years and selected_quarters:
 
@@ -146,8 +163,10 @@ with col[1]:
     # Customize map layout
     fig_map.update_geos(fitbounds="locations", visible=False)
 
-    # Display choropleth map
-    st.plotly_chart(fig_map, use_container_width=True)
+    # # Display choropleth map
+    #st.plotly_chart(fig_map, use_container_width=True)
+    
+    st.image(Image.open("Dataset/CasesAllYears_blck2b.png"), caption='Total Number of Cases', use_column_width=True)
 
 
 
@@ -172,8 +191,8 @@ with col[2]:
     st.dataframe(combined_df_sorted[['LGA', 'Total number of presumptives']],
                  column_order=("LGA", "Total number of presumptives"),
                  hide_index=True,
-                 width=None,
-                 column_config={
+                 width=None
+                 ,column_config={
                      "LGA": st.column_config.TextColumn("LGA"),
                      "Total number of presumptives": st.column_config.ProgressColumn(
                          "Total number of presumptives",
