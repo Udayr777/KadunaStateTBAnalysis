@@ -5,6 +5,8 @@ import numpy as np
 import altair as alt
 import plotly.express as px
 from PIL import Image
+import matplotlib.pyplot as plt
+from block1 import vis1A
 
 # Page configuration
 st.set_page_config(
@@ -18,7 +20,7 @@ alt.themes.enable("dark")
 
 st.title('Tuberculosis Analysis in Kaduna')
 
-dataType = ["Number of suspected PTB cases Data", "Number of confirmed PTB cases"]
+dataType = ["Breakdown of activities of all presumptive PTB cases on the clinic during the register", "Quarterly breakdown of all TB cases registered during the quarter by category and type of diagnosis"]
 
 block2021 = ""
 block2022 = ""
@@ -33,11 +35,13 @@ with st.sidebar:
     #which block the user want to see
     block = st.selectbox("Dataset", options = dataType )
 
-    if block == "Number of suspected PTB cases Data":
-    # Load the data
+    #block 1a
+    if block == "Breakdown of activities of all presumptive PTB cases on the clinic during the register":
+        # Load the data
         block2021 = pd.read_csv("Dataset/block1a/2021_block1a_dataset.csv")
         block2022 = pd.read_csv("Dataset/block1a/2022_block1a_dataset.csv")
         block2023 = pd.read_csv("Dataset/block1a/2023_block1a_dataset.csv")
+    #block 2b
     else:
         block2021 = pd.read_csv("Dataset/block2a/block2a_2021.csv")
         block2022 = pd.read_csv("Dataset/block2a/block2a_2022.csv")
@@ -130,47 +134,25 @@ def make_choropleth(input_df, input_id, input_column, input_color_theme):
 
 
 # Dashboard Main Panel
-col = st.columns((1.5, 4.5, 2), gap='medium')
+col = st.columns((5, 2), gap='medium')
 
 
+with col[0]:
+    if block == "Breakdown of activities of all presumptive PTB cases on the clinic during the register":
+        
+        #if the user picks block 1a
+        #this method is from block1.py. It displays all the models needed for block 1.
+        #if you want to add more models add them in block1.py
+        vis1A(combined_df)
+    
+    else:
+        
+        #if the user picks block 2a
+        st.write("User has picked block 2a")
+        ## TODO: Put the models in the code##
+
+## TODO: This does not work if the user picks block 2A ##
 with col[1]:
-
-    # Sample Data for the choropleth map
-    data_map = {
-        'State': ['Kaduna', 'Lagos', 'Abuja'], 
-        'Year': [2021, 2022, 2023], 
-        }
-    
-    combined_df_map = pd.DataFrame(data_map)
-
-    # GeoJSON data for Nigerian states
-    geojson_url = "https://raw.githubusercontent.com/UdashFramework/plotly-dash/master/dash_geojson/test/assets/nigeria.geojson"
-    
-
-
-    
-    # Create choropleth map
-    fig_map = px.choropleth(
-        combined_df_map,
-        geojson=geojson_url,
-        featureidkey="properties.NAME_1",
-        locations="State",
-        color="Year",
-        color_continuous_scale="Viridis",
-        title="Tuberculosis Analysis in Kaduna",
-    )
-    
-    # Customize map layout
-    fig_map.update_geos(fitbounds="locations", visible=False)
-
-    # # Display choropleth map
-    #st.plotly_chart(fig_map, use_container_width=True)
-    
-    st.image(Image.open("Dataset/CasesAllYears_blck2b.png"), caption='Total Number of Cases', use_column_width=True)
-
-
-
-with col[2]:
     st.markdown("#### Top LGA's")
 
     # Sort the DataFrame by "Total number of presumptives" in ascending order
@@ -201,7 +183,7 @@ with col[2]:
                          max_value=max_value,  
                      )
                  }
-                 )
+    )
 
 
 
