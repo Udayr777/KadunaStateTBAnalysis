@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import streamlit as st
-def vis1A(combined_df):
+def vis1A(combined_df, numYears, numQuarters):
     fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(14, 10))
     
 
@@ -30,3 +30,7 @@ def vis1A(combined_df):
     
 
     st.pyplot(fig)
+
+    if(numYears + numQuarters > 2):
+        st.write("Graph time")
+   

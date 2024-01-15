@@ -143,13 +143,14 @@ with col[0]:
         #if the user picks block 1a
         #this method is from block1.py. It displays all the models needed for block 1.
         #if you want to add more models add them in block1.py
-        vis1A(combined_df)
-    
+        vis1A(combined_df, len(selected_years), len(selected_quarters))
+        st.write("Block1a")
     else:
         
         #if the user picks block 2a
         st.write("User has picked block 2a")
-        ## TODO: Put the models in the code##
+        ## TODO: Put the models in the code ##
+        st.write("Block2a")
 
 ## TODO: This does not work if the user picks block 2A ##
 with col[1]:
