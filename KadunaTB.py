@@ -8,6 +8,8 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from block1 import vis1A
 
+from block2b import vis2B
+
 # Page configuration
 st.set_page_config(
     page_title = "Kaduna State Tuberculosis",
@@ -20,7 +22,7 @@ alt.themes.enable("dark")
 
 st.title('Tuberculosis Analysis in Kaduna')
 
-dataType = ["Breakdown of activities of all presumptive PTB cases on the clinic during the register", "Quarterly breakdown of all TB cases registered during the quarter by category and type of diagnosis"]
+dataType = ["Breakdown of activities of all presumptive PTB cases on the clinic during the register", "Quarterly breakdown of all TB cases registered during the quarter by category and type of diagnosis", "Number of cases broken down by gender and age"]
 
 block2021 = ""
 block2022 = ""
@@ -42,6 +44,11 @@ with st.sidebar:
         block2022 = pd.read_csv("Dataset/block1a/2022_block1a_dataset.csv")
         block2023 = pd.read_csv("Dataset/block1a/2023_block1a_dataset.csv")
     #block 2b
+    elif block == "Number of cases broken down by gender and age":
+        block2021 = pd.read_csv("Dataset/block2b/Block2b_2021.csv")
+        block2022 = pd.read_csv("Dataset/block2b/Block2b_2022.csv")
+        block2023 = pd.read_csv("Dataset/block2b/Block2b_2023.csv")
+        
     else:
         block2021 = pd.read_csv("Dataset/block2a/block2a_2021.csv")
         block2022 = pd.read_csv("Dataset/block2a/block2a_2022.csv")
@@ -71,6 +78,7 @@ with st.sidebar:
 
 # Filter and display the combined DataFrame based on selected Years and Quarters
 combined_df = pd.concat([df[df['Year'].isin(selected_years_values) & df['Quarter'].isin(selected_quarters_values)] for df in [block2021, block2022, block2023]]).reset_index(drop=True)
+
 
 if selected_years and selected_quarters:
 
@@ -143,8 +151,16 @@ with col[0]:
         #if the user picks block 1a
         #this method is from block1.py. It displays all the models needed for block 1.
         #if you want to add more models add them in block1.py
+        st.write("Dynamic data")
         vis1A(combined_df, len(selected_years), len(selected_quarters))
-        st.write("Block1a")
+        st.write("Static data")
+
+    elif block == "Number of cases broken down by gender and age":
+        #st.dataframe(combined_df)
+        
+
+        #st.dataframe(combined_df.iloc[:, 1:].iloc[:, :-6])
+        vis2B(combined_df.iloc[:, 1:].iloc[:, :-6], len(selected_years), len(selected_quarters))
     else:
         
         #if the user picks block 2a
@@ -153,38 +169,38 @@ with col[0]:
         st.write("Block2a")
 
 ## TODO: This does not work if the user picks block 2A ##
-with col[1]:
-    st.markdown("#### Top LGA's")
+# with col[1]:
+#     st.markdown("#### Top LGA's")
 
-    # Sort the DataFrame by "Total number of presumptives" in ascending order
-    combined_df_sorted = combined_df.sort_values(by="Total number of presumptives", ascending=False)
+#     # Sort the DataFrame by "Total number of presumptives" in ascending order
+#     combined_df_sorted = combined_df.sort_values(by="Total number of presumptives", ascending=False)
 
-    # Ensure unique LGA values
-    combined_df_sorted = combined_df_sorted.drop_duplicates(subset=["LGA"])
-
-
-    # Check for empty DataFrame and handle accordingly
-    if not combined_df_sorted.empty:
-        max_value = max(combined_df_sorted.Year)
-    else:
-        max_value = 100 
+#     # Ensure unique LGA values
+#     combined_df_sorted = combined_df_sorted.drop_duplicates(subset=["LGA"])
 
 
-    # Select and display the desired columns with progress bar configuration
-    st.dataframe(combined_df_sorted[['LGA', 'Total number of presumptives']],
-                 column_order=("LGA", "Total number of presumptives"),
-                 hide_index=True,
-                 width=None
-                 ,column_config={
-                     "LGA": st.column_config.TextColumn("LGA"),
-                     "Total number of presumptives": st.column_config.ProgressColumn(
-                         "Total number of presumptives",
-                         format="%f",
-                         min_value=0,
-                         max_value=max_value,  
-                     )
-                 }
-    )
+#     # Check for empty DataFrame and handle accordingly
+#     if not combined_df_sorted.empty:
+#         max_value = max(combined_df_sorted.Year)
+#     else:
+#         max_value = 100 
+
+
+#     # Select and display the desired columns with progress bar configuration
+#     st.dataframe(combined_df_sorted[['LGA', 'Total number of presumptives']],
+#                  column_order=("LGA", "Total number of presumptives"),
+#                  hide_index=True,
+#                  width=None
+#                  ,column_config={
+#                      "LGA": st.column_config.TextColumn("LGA"),
+#                      "Total number of presumptives": st.column_config.ProgressColumn(
+#                          "Total number of presumptives",
+#                          format="%f",
+#                          min_value=0,
+#                          max_value=max_value,  
+#                      )
+#                  }
+#     )
 
 
 
