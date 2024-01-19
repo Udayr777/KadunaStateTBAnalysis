@@ -25,9 +25,6 @@ st.title('Tuberculosis Analysis in Kaduna')
 
 dataType = ["Breakdown of activities of all presumptive PTB cases on the clinic during the register", "Quarterly breakdown of all TB cases registered during the quarter by category and type of diagnosis", "Number of cases broken down by gender and age"]
 
-block2021 = ""
-block2022 = ""
-block2023 = ""
 gps_facility_df = pd.read_csv("Dataset/gps_facility_final.csv")
 
 # Sidebar for Slected Year
@@ -40,32 +37,23 @@ with st.sidebar:
 
     #block 1a
     if block == "Breakdown of activities of all presumptive PTB cases on the clinic during the register":
-        # Load the data
-        # block2021 = pd.read_csv("Dataset/block1a/2021_block1a_dataset.csv")
-        # block2022 = pd.read_csv("Dataset/block1a/2022_block1a_dataset.csv")
-        # block2023 = pd.read_csv("Dataset/block1a/2023_block1a_dataset.csv")
         blockCombined = pd.read_csv("Dataset/block1a/block1a_2019_to_2023_processed.csv")
+
     #block 2b
     elif block == "Number of cases broken down by gender and age":
-        block2021 = pd.read_csv("Dataset/block2b/Block2b_2021.csv")
-        block2022 = pd.read_csv("Dataset/block2b/Block2b_2022.csv")
-        block2023 = pd.read_csv("Dataset/block2b/Block2b_2023.csv")
-        
+        blockCombined = pd.read_csv("Dataset/block2b/block2b_19_to_23.csv")
+
     else:
-        # block2021 = pd.read_csv("Dataset/block2a/block2a_2021.csv")
-        # block2022 = pd.read_csv("Dataset/block2a/block2a_2022.csv")
-        # block2023 = pd.read_csv("Dataset/block2a/block2a_2023.csv")
+
         blockCombined = pd.read_csv("Dataset/block2a/block2a_full_data_q.csv")
 
 
 
 
 # Combine unique Years and create labeled options for multiselect
-# all_years_with_labels = [year for year in pd.concat([df['Year'] for df in [block2021, block2022, block2023]]).unique()]
 all_years_with_labels = [year for year in blockCombined['Year'].unique()]
 
 # Combine unique Quarters and create labeled options for multiselect
-# all_quarters_with_labels = [("Quarter " + str(quarter), quarter) for quarter in pd.concat([df['Quarter'] for df in [block2021, block2022, block2023]]).unique()]
 all_quarters_with_labels = [("Quarter " + str(quarter), quarter) for quarter in blockCombined['Quarter'].unique()]
 
 with st.sidebar:
@@ -97,7 +85,6 @@ with st.sidebar:
     
 
 # Filter and display the combined DataFrame based on selected Years and Quarters
-# combined_df = pd.concat([df[df['Year'].isin(selected_years_values) & df['Quarter'].isin(selected_quarters_values)] for df in [block2021, block2022, block2023]]).reset_index(drop=True)
 combined_df = blockCombined[blockCombined['Year'].isin(selected_years_values) & blockCombined['Quarter'].isin(selected_quarters_values)].reset_index(drop=True)
 
 
@@ -124,45 +111,6 @@ else:
     st.write("No data matches the selected criteria.")
 
 
-# Plots
-
-# Heatmap
-def make_heatmap(input_df, input_y, input_x, input_color, input_color_theme):
-    heatmap = alt.Chart(input_df).mark_rect().encode(
-            y=alt.Y(f'{input_y}:O', axis=alt.Axis(title="Year", titleFontSize=18, titlePadding=15, titleFontWeight=900, labelAngle=0)),
-            x=alt.X(f'{input_x}:O', axis=alt.Axis(title="", titleFontSize=18, titlePadding=15, titleFontWeight=900)),
-            color=alt.Color(f'max({input_color}):Q',
-                             legend=None,
-                             scale=alt.Scale(scheme=input_color_theme)),
-            stroke=alt.value('black'),
-            strokeWidth=alt.value(0.25),
-        ).properties(width=900
-        ).configure_axis(
-        labelFontSize=12,
-        titleFontSize=12
-        ) 
-    # height=300
-    return heatmap
-
-# Choropleth map
-def make_choropleth(input_df, input_id, input_column, input_color_theme):
-    choropleth = px.choropleth(input_df, locations=input_id, color=input_column, locationmode="Kaduna",
-                               color_continuous_scale=input_color_theme,
-                               range_color=(0, max(combined_df.Year)),
-                               scope="kaduna",
-                               labels={'Year':'Year'}
-                              )
-    choropleth.update_layout(
-        template='plotly_dark',
-        plot_bgcolor='rgba(0, 0, 0, 0)',
-        paper_bgcolor='rgba(0, 0, 0, 0)',
-        margin=dict(l=0, r=0, t=0, b=0),
-        height=350
-    )
-    return choropleth
-
-
-
 # Display the selected year and quarter
 year_quarter_options = [
     '2019 Q1', '2019 Q2', '2019 Q3', '2019 Q4', '2020 Q1', '2020 Q2',
@@ -171,24 +119,12 @@ year_quarter_options = [
 ]
 
 year_quarter = st.select_slider('Year and Quarter', options=year_quarter_options)
-# selected_year = int(year_quarter.split(" ")[0])
-# adjusted_year_quarter = "2021 Q1" if selected_year < 2021 else year_quarter
-
-
 
 c1, c2 = st.columns(2)
 c1.plotly_chart(show_choropleth_for_number_of_diagnosed(year_quarter), use_container_width=True)
 c2.plotly_chart(show_gender_age_tb_bar(year_quarter), use_container_width=True)
 
 st.plotly_chart(create_tb_scatter_plot(year_quarter), use_container_width=True)
-
-# lga_choice = st.selectbox(
-#     'Select a Kaduna LGA',
-#     kaduna_lgas)
-
-# c1_, c2_ = st.columns(2)
-# c1_.plotly_chart(plot_lga_presumptive_cases_trend(lga_choice), use_container_width=True)
-# c2_.plotly_chart(plot_lga_diagnosed_tb_cases_trend(lga_choice), use_container_width=True)
 
 c1_, c2_ = st.columns(2)
 c1_.plotly_chart(plot_lga_presumptive_cases_trend(lga_choice), use_container_width=True)
@@ -213,11 +149,7 @@ with col[0]:
         st.write("Static data")
 
     elif block == "Number of cases broken down by gender and age":
-        #st.dataframe(combined_df)
-        
-
-        #st.dataframe(combined_df.iloc[:, 1:].iloc[:, :-6])
-        vis2B(combined_df.iloc[:, 1:].iloc[:, :-6], len(selected_years), len(selected_quarters))
+        vis2B(combined_df.iloc[:, 1:])
     else:
         
         #if the user picks block 2a
