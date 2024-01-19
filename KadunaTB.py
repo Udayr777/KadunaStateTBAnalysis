@@ -7,6 +7,7 @@ import plotly.express as px
 from PIL import Image
 import matplotlib.pyplot as plt
 from block1 import vis1A
+from visualsblock1 import plot_lga_presumptive_cases_trend, plot_lga_diagnosed_tb_cases_trend, show_choropleth_for_number_of_diagnosed, show_gender_age_tb_bar, kaduna_lgas, create_tb_cases_plot, create_tb_scatter_plot
 
 from block2b import vis2B
 
@@ -40,9 +41,10 @@ with st.sidebar:
     #block 1a
     if block == "Breakdown of activities of all presumptive PTB cases on the clinic during the register":
         # Load the data
-        block2021 = pd.read_csv("Dataset/block1a/2021_block1a_dataset.csv")
-        block2022 = pd.read_csv("Dataset/block1a/2022_block1a_dataset.csv")
-        block2023 = pd.read_csv("Dataset/block1a/2023_block1a_dataset.csv")
+        # block2021 = pd.read_csv("Dataset/block1a/2021_block1a_dataset.csv")
+        # block2022 = pd.read_csv("Dataset/block1a/2022_block1a_dataset.csv")
+        # block2023 = pd.read_csv("Dataset/block1a/2023_block1a_dataset.csv")
+        blockCombined = pd.read_csv("Dataset/block1a/block1a_2019_to_2023_processed.csv")
     #block 2b
     elif block == "Number of cases broken down by gender and age":
         block2021 = pd.read_csv("Dataset/block2b/Block2b_2021.csv")
@@ -50,18 +52,21 @@ with st.sidebar:
         block2023 = pd.read_csv("Dataset/block2b/Block2b_2023.csv")
         
     else:
-        block2021 = pd.read_csv("Dataset/block2a/block2a_2021.csv")
-        block2022 = pd.read_csv("Dataset/block2a/block2a_2022.csv")
-        block2023 = pd.read_csv("Dataset/block2a/block2a_2023.csv")
+        # block2021 = pd.read_csv("Dataset/block2a/block2a_2021.csv")
+        # block2022 = pd.read_csv("Dataset/block2a/block2a_2022.csv")
+        # block2023 = pd.read_csv("Dataset/block2a/block2a_2023.csv")
+        blockCombined = pd.read_csv("Dataset/block2a/block2a_full_data_q.csv")
 
 
 
 
 # Combine unique Years and create labeled options for multiselect
-all_years_with_labels = [year for year in pd.concat([df['Year'] for df in [block2021, block2022, block2023]]).unique()]
+# all_years_with_labels = [year for year in pd.concat([df['Year'] for df in [block2021, block2022, block2023]]).unique()]
+all_years_with_labels = [year for year in blockCombined['Year'].unique()]
 
 # Combine unique Quarters and create labeled options for multiselect
-all_quarters_with_labels = [("Quarter " + str(quarter), quarter) for quarter in pd.concat([df['Quarter'] for df in [block2021, block2022, block2023]]).unique()]
+# all_quarters_with_labels = [("Quarter " + str(quarter), quarter) for quarter in pd.concat([df['Quarter'] for df in [block2021, block2022, block2023]]).unique()]
+all_quarters_with_labels = [("Quarter " + str(quarter), quarter) for quarter in blockCombined['Quarter'].unique()]
 
 with st.sidebar:
     # Create multiselect widgets for Years and Quarters
@@ -73,11 +78,27 @@ with st.sidebar:
     selected_years_values = [int(option) for option in selected_years]
     selected_quarters_values = [int(option) for option in selected_quarters]
 
-    
+    lga_choice = st.selectbox(
+    'Select a Kaduna LGA',
+    kaduna_lgas)
+
+
+    if st.button("Contact Us"):
+        st.write("""
+                 **Contact:**
+                * Jamaludeen Madaki
+                * Omdena Kaduna Chapter Lead
+                * omdenakdnachapter@gmail.com
+                * +234 7010412114
+                """)
+
+
+
     
 
 # Filter and display the combined DataFrame based on selected Years and Quarters
-combined_df = pd.concat([df[df['Year'].isin(selected_years_values) & df['Quarter'].isin(selected_quarters_values)] for df in [block2021, block2022, block2023]]).reset_index(drop=True)
+# combined_df = pd.concat([df[df['Year'].isin(selected_years_values) & df['Quarter'].isin(selected_quarters_values)] for df in [block2021, block2022, block2023]]).reset_index(drop=True)
+combined_df = blockCombined[blockCombined['Year'].isin(selected_years_values) & blockCombined['Quarter'].isin(selected_quarters_values)].reset_index(drop=True)
 
 
 if selected_years and selected_quarters:
@@ -141,6 +162,42 @@ def make_choropleth(input_df, input_id, input_column, input_color_theme):
     return choropleth
 
 
+
+# Display the selected year and quarter
+year_quarter_options = [
+    '2019 Q1', '2019 Q2', '2019 Q3', '2019 Q4', '2020 Q1', '2020 Q2',
+    '2020 Q3', '2020 Q4', '2021 Q1', '2021 Q2', '2021 Q3', '2021 Q4',
+    '2022 Q1', '2022 Q2', '2022 Q3', '2022 Q4', '2023 Q1', '2023 Q2'
+]
+
+year_quarter = st.select_slider('Year and Quarter', options=year_quarter_options)
+# selected_year = int(year_quarter.split(" ")[0])
+# adjusted_year_quarter = "2021 Q1" if selected_year < 2021 else year_quarter
+
+
+
+c1, c2 = st.columns(2)
+c1.plotly_chart(show_choropleth_for_number_of_diagnosed(year_quarter), use_container_width=True)
+c2.plotly_chart(show_gender_age_tb_bar(year_quarter), use_container_width=True)
+
+st.plotly_chart(create_tb_scatter_plot(year_quarter), use_container_width=True)
+
+# lga_choice = st.selectbox(
+#     'Select a Kaduna LGA',
+#     kaduna_lgas)
+
+# c1_, c2_ = st.columns(2)
+# c1_.plotly_chart(plot_lga_presumptive_cases_trend(lga_choice), use_container_width=True)
+# c2_.plotly_chart(plot_lga_diagnosed_tb_cases_trend(lga_choice), use_container_width=True)
+
+c1_, c2_ = st.columns(2)
+c1_.plotly_chart(plot_lga_presumptive_cases_trend(lga_choice), use_container_width=True)
+c2_.plotly_chart(plot_lga_diagnosed_tb_cases_trend(lga_choice), use_container_width=True)
+
+
+
+
+
 # Dashboard Main Panel
 col = st.columns((5, 2), gap='medium')
 
@@ -201,6 +258,8 @@ with col[0]:
 #                      )
 #                  }
 #     )
+
+
 
 
 
