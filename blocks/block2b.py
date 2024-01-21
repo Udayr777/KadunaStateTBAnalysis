@@ -37,7 +37,8 @@ def displayBarGraph(df_table, timePeriod=""):
     plt.title('Number of Tuberculosis cases for ' + timePeriod)
 
     # Display the plot in Streamlit
-    st.pyplot(fig)
+    #st.pyplot(fig)
+    return fig
    
 
 def createPieCharts(dfWhole):
@@ -64,7 +65,7 @@ def createPieCharts(dfWhole):
         row[index].pie(values, labels=labels, autopct='%1.1f%%', startangle=90)
         row[index].set_title('Pie Chart for ages ' + ageRange)
 
-    st.pyplot(fig)
+    return fig
 
 
 def createPieChartTotal(dfWhole, timePeriod=""):
@@ -76,7 +77,8 @@ def createPieChartTotal(dfWhole, timePeriod=""):
     fig, row = plt.subplots( 1, 1, figsize=(15, 4) )
     row.pie(values, labels=labels, autopct='%1.1f%%', startangle=90)
     row.set_title('Pie chart for all ages for ' + timePeriod)
-    st.pyplot(fig)
+    #st.pyplot(fig)
+    return fig
 
 def analyzeDataFrame(eda2B, bargraph, piechart, chart, totalChart,timePeriod=""):   
     eda2BFemale = eda2B[eda2B ['Sex'] == 'Female'].copy() # This data frame contains all the female data
@@ -101,20 +103,26 @@ def analyzeDataFrame(eda2B, bargraph, piechart, chart, totalChart,timePeriod="")
 
     
     if bargraph:
-        displayBarGraph(combinedDF, timePeriod)
-    if chart: 
+        return displayBarGraph(combinedDF, timePeriod)
+    elif chart: 
         pd.DataFrame(combinedDF)
-        st.dataframe(combinedDF)
-    if piechart:
-        createPieCharts(combinedDF)
-    if totalChart:
-        createPieChartTotal(combinedDF,timePeriod)
+        return combinedDF
+    elif piechart:
+        return createPieCharts(combinedDF)
+    else :
+        return createPieChartTotal(combinedDF,timePeriod)
 
         
 
 def vis2B(combined_df):
     st.write("visualizations for tb cases broken down by gender and age.")
-    analyzeDataFrame(combined_df,True, False, False, False, "")
-    analyzeDataFrame(combined_df, False, False, False, True, "All ages")
-    analyzeDataFrame(combined_df, False, True, False, False, "Percentage of men and women")
-    analyzeDataFrame(combined_df,False, False, True, False, "")
+    histogram = analyzeDataFrame(combined_df,True, False, False, False, "")
+    totalPiechart = analyzeDataFrame(combined_df, False, False, False, True, "All ages")
+    piecharts = analyzeDataFrame(combined_df, False, True, False, False, "Percentage of men and women")
+    numbers = analyzeDataFrame(combined_df,False, False, True, False, "")
+
+    st.pyplot(histogram)
+    st.pyplot(totalPiechart)
+    st.pyplot(piecharts)
+    st.dataframe(numbers)
+    

@@ -4,7 +4,7 @@ import geopandas as gpd
 import plotly.express as px
 import plotly.graph_objects as go
 
-block1a = pd.read_csv("Dataset/block1a/block1a_2019_to_2023_processed.csv")
+block1a = pd.read_csv("Datasets/block1a/block1a_2019_to_2023_processed.csv")
 
 # Read the shapefile
 shapes = gpd.read_file("nga_adm_osgof_20190417/nga_admbnda_adm2_osgof_20190417.shp")
@@ -13,12 +13,12 @@ c_lon = 7.7095
 geodf = block1a.merge(shapes, left_on='LGA', right_on='ADM2_EN', how='left')
 geodf = gpd.GeoDataFrame(geodf)
 
-block2b =  pd.read_csv('block2b_age_19_to_23.csv')
+block2b =  pd.read_csv('Datasets/Misc/block2b_age_19_to_23.csv')
 
 # Forecasted df
-grouped_df = pd.read_csv("total_tb_notified_with_predicted.csv")
+grouped_df = pd.read_csv("Datasets/Misc/total_tb_notified_with_predicted.csv")
 
-tb_cluster = pd.read_csv("tb_cases_cluster_data.csv")
+tb_cluster = pd.read_csv("Datasets/Misc/tb_cases_cluster_data.csv")
 
 kaduna_lgas = block1a['LGA'].unique()
 
