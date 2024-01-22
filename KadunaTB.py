@@ -7,6 +7,7 @@ import plotly.express as px
 from PIL import Image
 import matplotlib.pyplot as plt
 from blocks.block1 import vis1A
+from blocks.block2a import block2aTBCases, block2aDiagQtr, block2aDistLGA, block2aReleationship
 from blocks.visualsblock1 import plot_lga_presumptive_cases_trend, plot_lga_diagnosed_tb_cases_trend, show_choropleth_for_number_of_diagnosed, show_gender_age_tb_bar, kaduna_lgas, create_tb_cases_plot, create_tb_scatter_plot
 
 from blocks.block2b import vis2B
@@ -146,6 +147,26 @@ else:
     #if the user picks block 2a
     ## TODO: Put the models in the code ##
     st.write("Block2a")
+
+    c3_, c4_ = st.columns(2)
+    c5_, c6_ = st.columns(2)
+    fig1 = block2aTBCases(combined_df)
+    fig2 = block2aDiagQtr(combined_df)
+    fig3 = block2aDistLGA(combined_df)
+    # fig4 = block2aTotalTBCasesOverTime(combined_df)
+    fig5 = block2aReleationship(combined_df)
+    
+    # fig3 = block2aDiagQtrSum(combined_df)
+    c3_.plotly_chart(fig1, use_container_width=True)
+    c4_.plotly_chart(fig2, use_container_width=True)
+    c5_.plotly_chart(fig3, use_container_width=True)
+    # c6_.plotly_chart(fig4, use_container_width=True)
+    c6_.plotly_chart(fig5, use_container_width=True)
+    
+    
+    
+
+
 
 ## TODO: This does not work if the user picks block 2A ##
 # with col[1]:
