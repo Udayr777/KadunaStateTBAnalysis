@@ -6,11 +6,11 @@ import altair as alt
 import plotly.express as px
 from PIL import Image
 import matplotlib.pyplot as plt
-from blocks.block1 import vis1A
-from blocks.block2a import block2aTBCases, block2aDiagQtr, block2aDistLGA, block2aReleationship
-from blocks.visualsblock1 import plot_lga_presumptive_cases_trend, plot_lga_diagnosed_tb_cases_trend, show_choropleth_for_number_of_diagnosed, show_gender_age_tb_bar, kaduna_lgas, create_tb_cases_plot, create_tb_scatter_plot
+from views.blocks.block1 import vis1A
+from views.blocks.block2a import block2aTBCases, block2aDiagQtr, block2aDistLGA, block2aReleationship
+from views.blocks.visualsblock1 import plot_lga_presumptive_cases_trend, plot_lga_diagnosed_tb_cases_trend, show_choropleth_for_number_of_diagnosed, show_gender_age_tb_bar, kaduna_lgas, create_tb_cases_plot, create_tb_scatter_plot
 
-from blocks.block2b import vis2B
+from views.blocks.block2b import vis2B
 
 from scripts.spatiotemporal_cluster import get_hiv_cluster_plot, get_tb_cluster_plot
 
@@ -169,39 +169,6 @@ else:
     
 
 
-## TODO: This does not work if the user picks block 2A ##
-# with col[1]:
-#     st.markdown("#### Top LGA's")
-
-#     # Sort the DataFrame by "Total number of presumptives" in ascending order
-#     combined_df_sorted = combined_df.sort_values(by="Total number of presumptives", ascending=False)
-
-#     # Ensure unique LGA values
-#     combined_df_sorted = combined_df_sorted.drop_duplicates(subset=["LGA"])
-
-
-#     # Check for empty DataFrame and handle accordingly
-#     if not combined_df_sorted.empty:
-#         max_value = max(combined_df_sorted.Year)
-#     else:
-#         max_value = 100 
-
-
-#     # Select and display the desired columns with progress bar configuration
-#     st.dataframe(combined_df_sorted[['LGA', 'Total number of presumptives']],
-#                  column_order=("LGA", "Total number of presumptives"),
-#                  hide_index=True,
-#                  width=None
-#                  ,column_config={
-#                      "LGA": st.column_config.TextColumn("LGA"),
-#                      "Total number of presumptives": st.column_config.ProgressColumn(
-#                          "Total number of presumptives",
-#                          format="%f",
-#                          min_value=0,
-#                          max_value=max_value,  
-#                      )
-#                  }
-#     )
 
 
 
