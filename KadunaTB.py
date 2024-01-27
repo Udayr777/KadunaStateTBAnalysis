@@ -12,7 +12,7 @@ from blocks.visualsblock1 import plot_lga_presumptive_cases_trend, plot_lga_diag
 
 from blocks.block2b import vis2B
 
-from spatiotemporal_cluster import get_hiv_cluster_plot, get_tb_cluster_plot
+from scripts.spatiotemporal_cluster import get_hiv_cluster_plot, get_tb_cluster_plot
 
 # Page configuration
 st.set_page_config(
@@ -208,18 +208,19 @@ else:
 
 
 if selected_years and selected_quarters:
+    st.write("raw data")
     st.dataframe(combined_df.iloc[:, 1:])
 else:
     st.write("No data matches the selected criteria.")
 
 
-st.subheader("Spatiotemporal Clustering using ST-DBSCAN")
-st.write("These maps show spatiotemporal clusters of high volume of TB cases (left) and high volume of HIV and TB co-infections (right) within Kaduna")
-st.markdown("* LGA regions are color coded per legend")
-st.markdown("* Points represent healthcare facilities and are color coded by the spatiotemporal cluster designation")
-st.markdown("* Point sizes are indicative of disease burden - number of TB cases (left) and HIV co-infection rate (right)")
-st.markdown("* A st_dbscan_label of -1 indicates these facilities do not fall within a cluster")
+# st.subheader("Spatiotemporal Clustering using ST-DBSCAN")
+# st.write("These maps show spatiotemporal clusters of high volume of TB cases (left) and high volume of HIV and TB co-infections (right) within Kaduna")
+# st.markdown("* LGA regions are color coded per legend")
+# st.markdown("* Points represent healthcare facilities and are color coded by the spatiotemporal cluster designation")
+# st.markdown("* Point sizes are indicative of disease burden - number of TB cases (left) and HIV co-infection rate (right)")
+# st.markdown("* A st_dbscan_label of -1 indicates these facilities do not fall within a cluster")
 
-c1_stdb, c2_stdb = st.columns(2)
-c1_stdb.plotly_chart(get_tb_cluster_plot(), use_container_width=True)
-c2_stdb.plotly_chart(get_hiv_cluster_plot(), use_container_width=True)
+# c1_stdb, c2_stdb = st.columns(2)
+#c1_stdb.plotly_chart(get_tb_cluster_plot(), use_container_width=True)
+#c2_stdb.plotly_chart(get_hiv_cluster_plot(), use_container_width=True)
