@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from views.blocks.block1 import vis1A
 from views.blocks.block2a import block2aTBCases, block2aDiagQtr, block2aDistLGA, block2aReleationship
 from views.blocks.visualsblock1 import plot_lga_presumptive_cases_trend, plot_lga_diagnosed_tb_cases_trend, show_choropleth_for_number_of_diagnosed, show_gender_age_tb_bar, kaduna_lgas, create_tb_cases_plot, create_tb_scatter_plot
-from views.blocks.block2d import block2dTBHIV, show_gender_age_tb
+from views.blocks.block2d import block2dTBHIV, create_age_group_distribution_chart
 
 from views.blocks.block2b import vis2B
 
@@ -159,6 +159,41 @@ elif block == "Quarterly breakdown of all TB cases registered during the quarter
     c5_.plotly_chart(fig3, use_container_width=True)
     # c6_.plotly_chart(fig4, use_container_width=True)
     c6_.plotly_chart(fig5, use_container_width=True)
+
+else:
+    fig = block2dTBHIV(combined_df)
+    st.plotly_chart(fig, use_container_width=True)
+
+    data = {
+    'Year_Quarter': ['2022Q1', '2022Q1', '2022Q2', '2022Q2'],
+    'LGA': ['LGA1', 'LGA2', 'LGA1', 'LGA2'],
+    'Sex': ['Male', 'Female', 'Male', 'Female'],
+    '0 to 4': [10, 15, 8, 12],
+    '5 to 14': [20, 25, 18, 22],
+    '15 to 24': [15, 30, 25, 20],
+    '25 to 34': [12, 18, 10, 15],
+    '35 to 44': [8, 12, 6, 10],
+    '45 to 54': [5, 10, 8, 12],
+    '55 to 64': [3, 5, 4, 7],
+    '> 65': [1, 2, 2, 3],
+}
+    
+    # year_quarter_options = sorted(data['Year_Quarter'].unique())
+    st.title("TB-HIV Cases Visualization")
+    selected_year_quarter = st.selectbox("Select Year and Quarter", sorted(set(data['Year_Quarter'])))
+
+    # Create and display the chart
+    fig = create_age_group_distribution_chart(pd.DataFrame(data), selected_year_quarter)
+    st.plotly_chart(fig)
+
+
+    
+    
+    
+    
+
+
+
 
 else:
     fig = block2dTBHIV(combined_df)
