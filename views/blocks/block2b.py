@@ -115,13 +115,13 @@ def analyzeDataFrame(eda2B, bargraph, piechart, chart, totalChart,timePeriod="")
         
 
 def vis2B(combined_df):
-    st.write("visualizations for tb cases broken down by gender and age.")
+    # st.write("visualizations for tb cases broken down by gender and age.")
     histogram = analyzeDataFrame(combined_df,True, False, False, False, "")
     totalPiechart = analyzeDataFrame(combined_df, False, False, False, True, "All ages")
     piecharts = analyzeDataFrame(combined_df, False, True, False, False, "Percentage of men and women")
-    numbers = analyzeDataFrame(combined_df,False, False, True, False, "")
+    # numbers = analyzeDataFrame(combined_df,False, False, True, False, "")
 
-    st.dataframe(numbers)
+    # st.dataframe(numbers)
     c1, c2 = st.columns(2)
     c1.pyplot(histogram)
     c2.pyplot(totalPiechart)
