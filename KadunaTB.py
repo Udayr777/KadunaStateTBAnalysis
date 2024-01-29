@@ -26,7 +26,11 @@ alt.themes.enable("dark")
 
 st.title('Tuberculosis Analysis in Kaduna')
 
-dataType = ["Breakdown of activities of all presumptive PTB cases on the clinic during the register", "Quarterly breakdown of all TB cases registered during the quarter by category and type of diagnosis", "Number of cases broken down by gender and age"]
+dataType = ["Breakdown of activities of all presumptive PTB cases on the clinic during the register",
+            "Quarterly breakdown of all TB cases registered during the quarter by category and type of diagnosis", 
+            "Number of cases broken down by gender and age",
+            "Forcasts"
+           ]
 
 gps_facility_df = pd.read_csv("Datasets/Misc/gps_facility_final.csv")
 
@@ -46,8 +50,10 @@ with st.sidebar:
     elif block == "Number of cases broken down by gender and age":
         blockCombined = pd.read_csv("Datasets/block2b/block2b_19_to_23.csv")
 
-    else:
+    elif block == "Forcasts":
+        blockCombined = pd.read_csv("Datasets/Misc/PTB_EPTB_Total_lab_clinical_historical_forecasts.csv")
 
+    else:
         blockCombined = pd.read_csv("Datasets/block2a/block2a_full_data_q.csv")
 
 
@@ -166,14 +172,6 @@ else:
     c6_.plotly_chart(fig5, use_container_width=True)
     
     
-    
-
-
-
-
-
-
-
 if selected_years and selected_quarters:
     st.write("raw data")
     st.dataframe(combined_df.iloc[:, 1:])
