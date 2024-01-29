@@ -1,5 +1,5 @@
-# importing libraries
 import streamlit as st
+import pandas as pd
 import pandas as pd
 import numpy as np
 import altair as alt
@@ -10,10 +10,9 @@ from views.blocks.block1 import vis1A
 from views.blocks.block2a import block2aTBCases, block2aDiagQtr, block2aDistLGA, block2aReleationship
 from views.blocks.visualsblock1 import plot_lga_presumptive_cases_trend, plot_lga_diagnosed_tb_cases_trend, show_choropleth_for_number_of_diagnosed, show_gender_age_tb_bar, kaduna_lgas, create_tb_cases_plot, create_tb_scatter_plot
 from views.blocks.block2d import block2dTBHIV, show_gender_age_tb
-
+from streamlit_option_menu import option_menu
 from views.blocks.block2b import vis2B
 
-# from scripts.spatiotemporal_cluster import get_hiv_cluster_plot, get_tb_cluster_plot
 
 # Page configuration
 st.set_page_config(
@@ -22,16 +21,14 @@ st.set_page_config(
     layout = "wide",
     initial_sidebar_state = "expanded"
 )
-
 alt.themes.enable("dark")
-
-st.title('Tuberculosis Analysis in Kaduna')
 
 dataType = ["Breakdown of activities of all presumptive PTB cases on the clinic during the register", "Quarterly breakdown of all TB cases registered during the quarter by category and type of diagnosis", "Number of cases broken down by gender and age","Block 2d"]
 
 gps_facility_df = pd.read_csv("Datasets/Misc/gps_facility_final.csv")
 
-# Sidebar for Slected Year
+st.title("Kaduna State Visualizations!")
+#Sidebar for Slected Year
 with st.sidebar:
     st.sidebar.image("images/Kaduna chapter logo.jpg")
     st.title("❤️ Kaduna State Tuberculosis Dashboard")
@@ -53,9 +50,6 @@ with st.sidebar:
         # blockCombined = pd.read_csv("Datasets/block2d/block2d_all_years_processed.csv")
         blockCombined = pd.read_csv("Datasets/block2d/combined_data.csv")
 
-
-
-
 # Combine unique Years and create labeled options for multiselect
 all_years_with_labels = [year for year in blockCombined['Year'].unique()]
 
@@ -72,22 +66,20 @@ with st.sidebar:
     selected_years_values = [int(option) for option in selected_years]
     selected_quarters_values = [int(option) for option in selected_quarters]
 
+
     if block == "Breakdown of activities of all presumptive PTB cases on the clinic during the register":
         lga_choice = st.selectbox('Select a Kaduna LGA', kaduna_lgas)
-
-
+    
     if st.button("Contact Us"):
         st.write("""
-                 **Contact:**
+                    **Contact:**
                 * Jamaludeen Madaki
                 * Omdena Kaduna Chapter Lead
                 * omdenakdnachapter@gmail.com
                 * +234 7010412114
                 """)
-
-
-
     
+
 
 # Filter and display the combined DataFrame based on selected Years and Quarters
 combined_df = blockCombined[blockCombined['Year'].isin(selected_years_values) & blockCombined['Quarter'].isin(selected_quarters_values)].reset_index(drop=True)
@@ -176,13 +168,4 @@ else:
     st.write("No data matches the selected criteria.")
 
 
-# st.subheader("Spatiotemporal Clustering using ST-DBSCAN")
-# st.write("These maps show spatiotemporal clusters of high volume of TB cases (left) and high volume of HIV and TB co-infections (right) within Kaduna")
-# st.markdown("* LGA regions are color coded per legend")
-# st.markdown("* Points represent healthcare facilities and are color coded by the spatiotemporal cluster designation")
-# st.markdown("* Point sizes are indicative of disease burden - number of TB cases (left) and HIV co-infection rate (right)")
-# st.markdown("* A st_dbscan_label of -1 indicates these facilities do not fall within a cluster")
 
-# c1_stdb, c2_stdb = st.columns(2)
-#c1_stdb.plotly_chart(get_tb_cluster_plot(), use_container_width=True)
-#c2_stdb.plotly_chart(get_hiv_cluster_plot(), use_container_width=True)

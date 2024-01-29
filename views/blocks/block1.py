@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import streamlit as st
 import geopandas as gpd
 import pandas as pd
+import shap
 import plotly.express as px
 def vis1A(blockCombined, numYears, numQuarters):
     fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(14, 10))
