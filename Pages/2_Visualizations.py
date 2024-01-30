@@ -194,7 +194,7 @@ if block == "Forcasts" or (selected_years and selected_quarters):
     st.write("raw data")
     st.dataframe(combined_df.iloc[:, 1:])
 else:
-    visualizations(df)
+    st.write("No data selected")
 
 
 
