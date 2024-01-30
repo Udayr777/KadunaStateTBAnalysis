@@ -32,7 +32,7 @@ dataType = ["Breakdown of activities of all presumptive PTB cases on the clinic 
             "Number of cases broken down by gender and age - block2b",
             "HIV cases - block2d",
             "Forcasts Modules",
-            "Block 2C"
+            "TB Cases by Quarter and Year - block2c"
             ]
 
 gps_facility_df = pd.read_csv("Datasets/Misc/gps_facility_final.csv")
@@ -60,7 +60,7 @@ with st.sidebar:
     elif block == "Forcasts Modules":
        blockCombined = pd.read_csv("Datasets/Misc/PTB_EPTB_Total_lab_clinical_historical_forecasts.csv")
     
-    elif block == "Block 2C":
+    elif block == "TB Cases by Quarter and Year - block2c":
         blockCombined = pd.read_csv("Datasets/block2c/block2c_19_to_23_complete.csv")
 
     else:
@@ -178,7 +178,7 @@ elif block == "Forcasts Modules":
     # st.write("Forcasts")
     forcastDisplay(combined_df.iloc[:, 1:])
 
-elif block == "Block 2C":
+elif block == "TB Cases by Quarter and Year - block2c":
     vis2C(combined_df.iloc[:, 1:])
     
 else:
