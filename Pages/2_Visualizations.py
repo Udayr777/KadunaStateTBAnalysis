@@ -23,15 +23,15 @@ st.set_page_config(
     layout = "wide",
     initial_sidebar_state = "expanded"
 )
-alt.themes.enable("dark")
+# alt.themes.enable("dark")
 
-st.title('Tuberculosis Analysis in Kaduna')
+# st.title('Tuberculosis Analysis in Kaduna')
 
-dataType = ["Breakdown of activities of all presumptive PTB cases on the clinic during the register", 
-            "Quarterly breakdown of all TB cases registered during the quarter by category and type of diagnosis", 
-            "Number of cases broken down by gender and age",
-            "Block 2d",
-            "Forcasts",
+dataType = ["Breakdown of activities of all presumptive PTB cases on the clinic during the register - block1a", 
+            "Quarterly breakdown of all TB cases registered during the quarter by category and type of diagnosis - block2a", 
+            "Number of cases broken down by gender and age - block2b",
+            "HIV cases - block2d",
+            "Forcasts Modules",
             "Block 2C"
             ]
 
@@ -47,17 +47,17 @@ with st.sidebar:
     block = st.selectbox("Dataset", options = dataType )
 
     #block 1a
-    if block == "Breakdown of activities of all presumptive PTB cases on the clinic during the register":
+    if block == "Breakdown of activities of all presumptive PTB cases on the clinic during the register - block1a":
         blockCombined = pd.read_csv("Datasets/block1a/block1a_2019_to_2023_processed.csv")
 
     #block 2b and block 2c combined in block2b folder
-    elif block == "Number of cases broken down by gender and age":
+    elif block == "Number of cases broken down by gender and age - block2b":
         blockCombined = pd.read_csv("Datasets/block2b/block2b_19_to_23.csv")
 
-    elif block == "Quarterly breakdown of all TB cases registered during the quarter by category and type of diagnosis":
+    elif block == "Quarterly breakdown of all TB cases registered during the quarter by category and type of diagnosis - block2a":
         blockCombined = pd.read_csv("Datasets/block2a/block2a_full_data_q.csv")
 
-    elif block == "Forcasts":
+    elif block == "Forcasts Modules":
        blockCombined = pd.read_csv("Datasets/Misc/PTB_EPTB_Total_lab_clinical_historical_forecasts.csv")
     
     elif block == "Block 2C":
@@ -68,7 +68,7 @@ with st.sidebar:
         blockCombined = pd.read_csv("Datasets/block2d/combined_data.csv")
 
 # Combine unique Years and create labeled options for multiselect
-if block != "Forcasts":
+if block != "Forcasts Modules":
     all_years_with_labels = [year for year in blockCombined['Year'].unique()]
 
     # Combine unique Quarters and create labeled options for multiselect
@@ -85,7 +85,7 @@ if block != "Forcasts":
         selected_quarters_values = [int(option) for option in selected_quarters]
 
 
-        if block == "Breakdown of activities of all presumptive PTB cases on the clinic during the register":
+        if block == "Breakdown of activities of all presumptive PTB cases on the clinic during the register - block1a":
             lga_choice = st.selectbox('Select a Kaduna LGA', kaduna_lgas)
     
         if st.button("Contact Us"):
@@ -101,7 +101,7 @@ if block != "Forcasts":
 comibed_df = ""
 
 
-if block != "Forcasts":
+if block != "Forcasts Modules":
 
     # Filter and display the combined DataFrame based on selected Years and Quarters
     combined_df = blockCombined[blockCombined['Year'].isin(selected_years_values) & blockCombined['Quarter'].isin(selected_quarters_values)].reset_index(drop=True)
@@ -131,7 +131,7 @@ if block != "Forcasts":
 else:
     combined_df = blockCombined
 
-if block == "Breakdown of activities of all presumptive PTB cases on the clinic during the register":
+if block == "Breakdown of activities of all presumptive PTB cases on the clinic during the register - block1a":
      # Display the selected year and quarter
     year_quarter_options = [
         '2019 Q1', '2019 Q2', '2019 Q3', '2019 Q4', '2020 Q1', '2020 Q2',
@@ -152,13 +152,13 @@ if block == "Breakdown of activities of all presumptive PTB cases on the clinic 
     c2_.plotly_chart(plot_lga_diagnosed_tb_cases_trend(lga_choice), use_container_width=True)
         
 #if the user picks block 2a
-elif block == "Number of cases broken down by gender and age":
+elif block == "Number of cases broken down by gender and age - block2b":
     vis2B(combined_df.iloc[:, 1:])
 
 #if the user picks block 2a 
-elif block == "Quarterly breakdown of all TB cases registered during the quarter by category and type of diagnosis":
+elif block == "Quarterly breakdown of all TB cases registered during the quarter by category and type of diagnosis - block2a":
     
-    st.write("Block2a")
+    # st.write("Block2a")
 
     c3_, c4_ = st.columns(2)
     c5_, c6_ = st.columns(2)
@@ -174,8 +174,8 @@ elif block == "Quarterly breakdown of all TB cases registered during the quarter
     c5_.plotly_chart(fig3, use_container_width=True)
     # c6_.plotly_chart(fig4, use_container_width=True)
     c6_.plotly_chart(fig5, use_container_width=True)
-elif block == "Forcasts":
-    st.write("Forcasts")
+elif block == "Forcasts Modules":
+    # st.write("Forcasts")
     forcastDisplay(combined_df.iloc[:, 1:])
 
 elif block == "Block 2C":
@@ -190,8 +190,8 @@ else:
     fig = show_gender_age_tb(blockCombined, selected_year_quarter)
     st.plotly_chart(fig)
 
-if block == "Forcasts" or (selected_years and selected_quarters):
-    st.write("raw data")
+if block == "Forcasts Modules" or (selected_years and selected_quarters):
+    # st.write("raw data")
     st.dataframe(combined_df.iloc[:, 1:])
 else:
     st.write("No data selected")

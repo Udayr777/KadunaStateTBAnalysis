@@ -13,7 +13,7 @@ st.set_page_config(
     layout = "wide",
     initial_sidebar_state = "expanded"
 )
-alt.themes.enable("dark")
+# alt.themes.enable("dark")
 
 #Sidebar for Slected Year
 with st.sidebar:
@@ -71,25 +71,34 @@ excel_file = col3.file_uploader("Choose a file", type = 'xlsx')
 
 if excel_file is not None and block_type is not None and year_choice is not None:
     with st.spinner('Processing...'):
-        processed_data = process_lga_data(block_type, excel_file, year_choice)
-        # st.dataframe has a default comma in their values, to remove it:
-        s = processed_data.style.format({"Year": lambda x : '{:.0f}'.format(x)})
-        # Display the dataframe with formatted numeric columns
-        st.subheader(f"{data_desc[block_type]}", divider='grey')
-        st.dataframe(s)
+        try:
+            if excel_file.name.split(".")[-1] == 'xlsx':
+                processed_data = process_lga_data(block_type, excel_file, year_choice)
 
-        st.subheader(f"Load and Explore the Transformed {block_type}", divider='grey')
-        st.write("""
-        Load and explore the transformed data block using Pygwalker. This interactive exploration 
-        interface allows us to build charts by simply dragging and dropping the desired fields. 
-        This hands-on approach facilitates a deeper understanding of the data and aids in the 
-        discovery of valuable insights. 
-        For more information on how to use Pygwalker, please refer to the official [guides on visualizing](https://docs.kanaries.net/graphic-walker/data-viz/create-data-viz).
-        """)
+                # st.dataframe has a default comma in their values, to remove it:
+                s = processed_data.style.format({"Year": lambda x: '{:.0f}'.format(x)})
+                # Display the dataframe with formatted numeric columns
+                st.subheader(f"{data_desc[block_type]}", divider='grey')
+                st.dataframe(s)
 
-        # Generate the HTML using Pygwalker
-        pyg_html = pyg.to_html(processed_data)
+                st.subheader(f"Load and Explore the Transformed {block_type}", divider='grey')
+                st.write("""
+                Load and explore the transformed data block using Pygwalker. This interactive exploration 
+                interface allows us to build charts by simply dragging and dropping the desired fields. 
+                This hands-on approach facilitates a deeper understanding of the data and aids in the 
+                discovery of valuable insights. 
+                For more information on how to use Pygwalker, please refer to the official [guides on visualizing](https://docs.kanaries.net/graphic-walker/data-viz/create-data-viz).
+                """)
 
-        # Embed the HTML into the Streamlit app
-        components.html(pyg_html, height=1000, scrolling=True)
- 
+                # Generate the HTML using Pygwalker
+                pyg_html = pyg.to_html(processed_data)
+
+                # Embed the HTML into the Streamlit app
+                components.html(pyg_html, height=1000, scrolling=True)
+
+            else:
+                st.error("Please upload an excel file (.xlsx) only as that is the standard storage of Kaduna TB cases.")
+        except (KeyError, ValueError) as e:
+            st.error(f"The uploaded Excel file does not adhere to the expected structure. Please refer to the [TB Cases 2023 Excel File](https://drive.google.com/drive/folders/1qeHsngqf-2UQ4uaycoE2ubc1BcBnocy0) for proper formatting. If you need assistance, contact support.", icon="🚨")
+else:
+    st.warning("Please provide values for 'excel_file', 'block_type', and 'year_choice'.")
