@@ -123,6 +123,9 @@ def vis2B(combined_df):
 
     # st.dataframe(numbers)
     c1, c2 = st.columns(2)
+    stats = analyzeDataFrame(combined_df,False, False, True, False)
+
+    c1.dataframe(stats)
     c1.pyplot(histogram)
     c2.pyplot(totalPiechart)
     st.pyplot(piecharts)

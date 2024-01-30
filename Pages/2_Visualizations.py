@@ -12,6 +12,7 @@ from views.blocks.visualsblock1 import plot_lga_presumptive_cases_trend, plot_lg
 from views.blocks.block2d import block2dTBHIV, show_gender_age_tb
 from streamlit_option_menu import option_menu
 from views.blocks.block2b import vis2B
+from views.blocks.block2c import vis2C
 from views.forcasts import forcastDisplay
 
 
@@ -30,7 +31,8 @@ dataType = ["Breakdown of activities of all presumptive PTB cases on the clinic 
             "Quarterly breakdown of all TB cases registered during the quarter by category and type of diagnosis", 
             "Number of cases broken down by gender and age",
             "Block 2d",
-            "Forcasts"
+            "Forcasts",
+            "Block 2C"
             ]
 
 gps_facility_df = pd.read_csv("Datasets/Misc/gps_facility_final.csv")
@@ -57,6 +59,9 @@ with st.sidebar:
 
     elif block == "Forcasts":
        blockCombined = pd.read_csv("Datasets/Misc/PTB_EPTB_Total_lab_clinical_historical_forecasts.csv")
+    
+    elif block == "Block 2C":
+        blockCombined = pd.read_csv("Datasets/block2c/block2c_19_to_23_complete.csv")
 
     else:
         # blockCombined = pd.read_csv("Datasets/block2d/block2d_all_years_processed.csv")
@@ -80,11 +85,11 @@ if block != "Forcasts":
         selected_quarters_values = [int(option) for option in selected_quarters]
 
 
-    if block == "Breakdown of activities of all presumptive PTB cases on the clinic during the register":
-        lga_choice = st.selectbox('Select a Kaduna LGA', kaduna_lgas)
+        if block == "Breakdown of activities of all presumptive PTB cases on the clinic during the register":
+            lga_choice = st.selectbox('Select a Kaduna LGA', kaduna_lgas)
     
-    if st.button("Contact Us"):
-        st.write("""
+        if st.button("Contact Us"):
+            st.write("""
                     **Contact:**
                 * Jamaludeen Madaki
                 * Omdena Kaduna Chapter Lead
@@ -172,6 +177,9 @@ elif block == "Quarterly breakdown of all TB cases registered during the quarter
 elif block == "Forcasts":
     st.write("Forcasts")
     forcastDisplay(combined_df.iloc[:, 1:])
+
+elif block == "Block 2C":
+    vis2C(combined_df.iloc[:, 1:])
     
 else:
     fig = block2dTBHIV(combined_df)
