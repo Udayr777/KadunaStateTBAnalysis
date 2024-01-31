@@ -121,7 +121,7 @@ def vis2B(combined_df):
     piecharts = analyzeDataFrame(combined_df, False, True, False, False, "Percentage of men and women")
     # numbers = analyzeDataFrame(combined_df,False, False, True, False, "")
 
-    # st.dataframe(numbers)
+    st.dataframe(numbers)
     c1, c2 = st.columns(2)
     # stats = analyzeDataFrame(combined_df,False, False, True, False)
 
