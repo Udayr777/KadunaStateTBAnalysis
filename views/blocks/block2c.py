@@ -31,7 +31,7 @@ def createLineChart(df):
             labels.append(f"{year} Q{quarter}")
 
     # Plotting the line graph
-    plt.figure(figsize=(10, 5))  # Adjust the width and height as needed
+    plt.figure(figsize=(5, 3))  # Adjust the width and height as needed
 
     # Plotting the data
     plt.plot(labels, values, marker='o', linestyle='-')
@@ -47,7 +47,6 @@ def createLineChart(df):
 
     plt.xticks(rotation='vertical')
 
-    # Displaying the plot
     st.pyplot(plt)
 
 

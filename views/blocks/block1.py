@@ -35,3 +35,5 @@ def vis1A(blockCombined, numYears, numQuarters):
 
     st.pyplot(fig)
 
+    
+
