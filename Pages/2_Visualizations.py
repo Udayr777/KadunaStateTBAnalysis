@@ -150,6 +150,8 @@ if block == "Breakdown of activities of all presumptive PTB cases on the clinic 
     c1_, c2_ = st.columns(2)
     c1_.plotly_chart(plot_lga_presumptive_cases_trend(lga_choice), use_container_width=True)
     c2_.plotly_chart(plot_lga_diagnosed_tb_cases_trend(lga_choice), use_container_width=True)
+
+    vis1A(combined_df.iloc[:, 1:],"not used","not used")
         
 #if the user picks block 2a
 elif block == "Number of cases broken down by gender and age - block2b":

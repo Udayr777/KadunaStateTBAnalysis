@@ -9,10 +9,10 @@ import geopandas as gpd
 
 
 
-def createLineChart(df):
+def createLineChart(df,c1):
    # Create a dropdown for selecting LGAs, including an option for all LGAs
     lga_options = ['All LGAs'] + df['LGA'].unique().tolist()
-    selected_lga = st.selectbox('Select LGA', lga_options, index=0)
+    selected_lga = c1.selectbox('Select LGA', lga_options, index=0)
 
     # Filter the DataFrame based on the selected LGA
     if selected_lga == 'All LGAs':
@@ -31,7 +31,7 @@ def createLineChart(df):
             labels.append(f"{year} Q{quarter}")
 
     # Plotting the line graph
-    plt.figure(figsize=(5, 3))  # Adjust the width and height as needed
+    plt.figure(figsize=(10, 5))  # Adjust the width and height as needed
 
     # Plotting the data
     plt.plot(labels, values, marker='o', linestyle='-')
@@ -46,17 +46,22 @@ def createLineChart(df):
     plt.ylabel('Total Value')
 
     plt.xticks(rotation='vertical')
-
-    st.pyplot(plt)
+    return plt
 
 
 
 def vis2C(combined_df):
     allYears = pd.read_csv("Datasets/block2c/block2c_19_to_23_complete.csv")
-    createLineChart(allYears)
+  
+    
+
+
+
+
     year_quarter='2022Q2'
     df = pd.read_csv("Datasets/block2c/Block2C.csv")
     c1, c2 = st.columns(2)
+    linechart =  createLineChart(allYears,c1)
     
     df['Year_Quarter'] = df['Year'].astype('str')+'Q'+df['Quarter'].astype('str')
     df.drop(columns=['Unnamed: 0'],inplace=True)
@@ -84,6 +89,8 @@ def vis2C(combined_df):
             title = f'Genderwise TB Cases By Age_Gr for quarter {year_quarter}'
         )
     fig.update_layout(template='plotly_white')
+    c1.pyplot(linechart)
     c1.plotly_chart(fig)
+    
 
     
